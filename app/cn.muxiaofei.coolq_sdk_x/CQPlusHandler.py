@@ -340,15 +340,16 @@ class MainHandler(cqplus.CQPlusHandler):
         if volume == 0:
             self.api.send_group_msg(from_group,"嗯？啥也不放？这就是所谓喝西北风吗。。。")
         else:
+            sour = round(conDict['powdered delta']/volume,2)
+            profile['A酸']=sour
             sweet = round(conDict['adelhyde']/volume,2)
-            profile['甜']=sweet
+            profile['B甜']=sweet
             bitter = round(conDict['bronson extract']/volume,2)
-            profile['苦']=bitter
+            profile['C苦']=bitter
             alcohol = round(conDict['karmotrine']/volume,2)
             spicy = round(conDict['flanergide']/volume,2)
-            profile['辣']=spicy
-            sour = round(conDict['powdered delta']/volume,2)
-            profile['酸']=sour
+            profile['D辣']=spicy
+
             prefix = ''
             if sweet==bitter and bitter==spicy and spicy==sour:
                 flavor='清淡'
@@ -378,8 +379,8 @@ class MainHandler(cqplus.CQPlusHandler):
                 drink_name = name
             self.api.send_group_msg(from_group,
                                     drink_name+"由"+'、'.join(result)+"调制而成。"+'\r\n'+
-                                    "口味特点："+prefix+str(flavor)+'\r\n'+
-                                    "[CQ:image,file="+prefix+str(flavor)+".png]"+'\r\n'+
+                                    "口味特点："+prefix+str(flavor[1])+'\r\n'+
+                                    "[CQ:image,file="+prefix+str(flavor[1])+".png]"+'\r\n'+
                                     "请慢用！"
                                     )
 
