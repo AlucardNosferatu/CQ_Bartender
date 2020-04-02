@@ -8,15 +8,12 @@ import time
 
 class MainHandler(cqplus.CQPlusHandler):
     
-    def scan_files(self,directory,prefix=None,postfix=None):
+    def scan_files(self,directory,postfix):
         files_list=[]
         for root, sub_dirs, files in os.walk(directory):
             for special_file in files:
                 if postfix:
                     if special_file.endswith(postfix):
-                        files_list.append(os.path.join(root,special_file))
-                elif prefix:
-                    if special_file.startswith(prefix):
                         files_list.append(os.path.join(root,special_file))
                 else:
                     files_list.append(os.path.join(root,special_file))
@@ -78,11 +75,10 @@ class MainHandler(cqplus.CQPlusHandler):
                 pickle.dump(msg_obj,f)
                 f.close()
                 self.safely_remove(name+ticks+".pkl")
-            self.api.send_group_msg(params['from_group'],params['msg'])
             
     def sender(self):
         path = os.getcwd()+"\\MsgWriter"
-        MsgList = self.scan_files(path,postfix='.pkl')
+        MsgList = self.scan_files(path,'.pkl')
         if(MsgList):
             for i in range(0,len(MsgList)):
                 f = open(MsgList[i],'rb')
