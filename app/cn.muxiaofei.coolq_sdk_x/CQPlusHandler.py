@@ -22,13 +22,6 @@ class MainHandler(cqplus.CQPlusHandler):
                     files_list.append(os.path.join(root,special_file))
         return files_list
 
-    def safely_remove(self,Msg):
-        try:
-            os.remove(Msg)
-        except WindowsError:
-            time.sleep(0.5)
-            self.safely_remove(Msg)
-
     def handle_event(self, event, params):
         valid = False
         ticks = str(round(time.time()))
@@ -84,21 +77,29 @@ class MainHandler(cqplus.CQPlusHandler):
                 f = open(name+ticks+".pkl",'wb') 
                 pickle.dump(msg_obj,f)
                 f.close()
+                self.safely_remove(name+ticks+".pkl")
+            self.api.send_group_msg(params['from_group'],params['msg'])
             
     def sender(self):
         path = os.getcwd()+"\\MsgWriter"
         MsgList = self.scan_files(path,postfix='.pkl')
-        for i in range(0,len(MsgList)):
-            f = open(MsgList[i],'rb')
-            MsgContent = self.safely_load(f)
-            f.close()
-            self.safely_remove(MsgList[i])
-            self.api.send_group_msg(MsgContent[0],MsgContent[1])
+        if(MsgList):
+            for i in range(0,len(MsgList)):
+                f = open(MsgList[i],'rb')
+                MsgContent = self.safely_load(f)
+                f.close()
+                self.safely_remove(MsgList[i])
+                self.api.send_group_msg(MsgContent[0],MsgContent[1])
+                
+    def safely_remove(self,Msg):
+        try:
+            os.remove(Msg)
+        except WindowsError:
+            self.safely_remove(Msg)
 
     def safely_load(self,f):
         try:
             MsgContent = pickle.load(f)
         except EOFError:
-            time.sleep(0.5)
             MsgContent = self.safely_load(f)
         return MsgContent

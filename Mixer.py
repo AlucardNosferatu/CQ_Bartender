@@ -140,7 +140,6 @@ class Mixer():
         try:
             pickle.dump(info,f)
         except EOFError:
-            time.sleep(0.5)
             self.safely_save(info,f)
     
     def scan_files(self,directory,prefix=None,postfix=None):
@@ -162,7 +161,6 @@ class Mixer():
         try:
             os.remove(Msg)
         except WindowsError:
-            time.sleep(0.5)
             self.safely_remove(Msg)
 
         
@@ -514,11 +512,19 @@ class Mixer():
     
     def custom_mixer(self,conDict,from_group):
         if conDict.__contains__('名称'):
-            self.msg_writer(from_group,'存在自定义材料，将以“名称”后所写内容作为酒名记录'+'\r\n'+
-                                    '名称：'+conDict['名称']+'\r\n'+
-                                    "如需锁定配方，请找跑堂的（[CQ:at,qq=1641367382]），谢谢！"
-                                    )
-            self.save_obj(conDict,conDict['名称'])     
+            if(len(conDict['名称'])>20):
+                self.msg_writer(from_group,
+                                "这名字也太长了。。。"+"\r\n"+
+                                "Scrooge？！"+"\r\n"+
+                                "你怎么睡着了？"+"\r\n"+
+                                "还流了一巴台口水？！"
+                                )
+            else:
+                self.msg_writer(from_group,'存在自定义材料，将以“名称”后所写内容作为酒名记录'+'\r\n'+
+                                        '名称：'+conDict['名称']+'\r\n'+
+                                        "如需锁定配方，请找跑堂的（[CQ:at,qq=1641367382]），谢谢！"
+                                        )
+                self.save_obj(conDict,conDict['名称'])     
         else:
             self.msg_writer(from_group,'存在自定义材料或非数量参数，未检测到“名称”项，请补充以完成配方登记或检查参数数据类型，谢谢！')
 
