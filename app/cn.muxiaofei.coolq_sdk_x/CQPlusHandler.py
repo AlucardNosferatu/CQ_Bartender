@@ -38,23 +38,24 @@ class MainHandler(cqplus.CQPlusHandler):
             "Zen Star"
             ]
 
-    def scan_files(self,directory,prefix=None,postfix=None):
-        files_list=[]
-        for root, sub_dirs, files in os.walk(directory):
-            for special_file in files:
-                if postfix:
-                    if special_file.endswith(postfix):
-                        files_list.append(os.path.join(root,special_file))
-                elif prefix:
-                    if special_file.startswith(prefix):
-                        files_list.append(os.path.join(root,special_file))
-                else:
-                    files_list.append(os.path.join(root,special_file))        
-        return files_list
+##    def scan_files(self,directory,prefix=None,postfix=None):
+##        files_list=[]
+##        for root, sub_dirs, files in os.walk(directory):
+##            for special_file in files:
+##                if postfix:
+##                    if special_file.endswith(postfix):
+##                        files_list.append(os.path.join(root,special_file))
+##                elif prefix:
+##                    if special_file.startswith(prefix):
+##                        files_list.append(os.path.join(root,special_file))
+##                else:
+##                    files_list.append(os.path.join(root,special_file))        
+##        return files_list
 
     def handle_event(self, event, params):
         path = os.getcwd()
         if event=='on_group_msg':
+            self.api.send_group_msg(params['from_group'],"收到")
             if("[CQ:at,qq=2874404757]" in params['msg']):
                 self.auto_recorder(params['from_qq'],params['msg'])
             else:
@@ -71,11 +72,11 @@ class MainHandler(cqplus.CQPlusHandler):
                         self.api.send_group_msg(params['from_group'],"点单指令过长（超出2行），请客官检查指令，多谢！")
                     else:
                         self.api.send_group_msg(params['from_group'],"未知错误，请客官检查指令是否与模板格式一致，多谢！")
-                elif msg_list[0] == '%全部定制':
-                    path += '\\users_menu'
-                    drink_list = self.scan_files(path,postfix='.pkl')
-                    drink_list = [item.replace(path+"\\","").replace(".pkl","") for item in drink_list]
-                    self.api.send_group_msg(params['from_group'],'\r\n'.join(drink_list))
+##                elif msg_list[0] == '%全部定制':
+##                    path += '\\users_menu'
+##                    drink_list = self.scan_files(path,postfix='.pkl')
+##                    drink_list = [item.replace(path+"\\","").replace(".pkl","") for item in drink_list]
+##                    self.api.send_group_msg(params['from_group'],'\r\n'.join(drink_list))
                 elif msg_list[0] == '%点单记录':
                     path += '\\users_log'
                     if(os.path.exists(path+'\\' + str(params['from_qq']) + '.log')):

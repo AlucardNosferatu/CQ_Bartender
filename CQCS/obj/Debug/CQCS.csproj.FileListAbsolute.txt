@@ -1,0 +1,8 @@
+C:\Users\16413\source\repos\CQCS\bin\Debug\CQCS.exe.config
+C:\Users\16413\source\repos\CQCS\bin\Debug\CQCS.exe
+C:\Users\16413\source\repos\CQCS\bin\Debug\CQCS.pdb
+C:\Users\16413\source\repos\CQCS\obj\Debug\CQCS.csprojAssemblyReference.cache
+C:\Users\16413\source\repos\CQCS\obj\Debug\CQCS.exe
+C:\Users\16413\source\repos\CQCS\obj\Debug\CQCS.pdb
+C:\Users\16413\source\repos\CQCS\bin\Debug\EventHook.dll
+C:\Users\16413\source\repos\CQCS\obj\Debug\CQCS.csproj.CopyComplete
