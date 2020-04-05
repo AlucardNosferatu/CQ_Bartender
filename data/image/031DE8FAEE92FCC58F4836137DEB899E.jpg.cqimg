@@ -1,9 +1,0 @@
-[image]
-md5=031DE8FAEE92FCC58F4836137DEB899E
-width=92
-height=65
-size=1238
-url=https://gchat.qpic.cn/gchatpic_new/3223289785/3926948880-2626223449-031DE8FAEE92FCC58F4836137DEB899E/0?term=2
-addtime=1585733088
-[notice]
-致开发者=由于消息服务器的更新，本文件中的 url 已被弃用，并将在未来被移除，请勿直接读取本文件。请更新至最新版 SDK，并使用 Api（CQ_getImage, 接收图片）读取本图片。
