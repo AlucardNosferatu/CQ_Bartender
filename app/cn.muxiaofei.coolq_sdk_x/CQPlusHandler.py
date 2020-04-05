@@ -38,32 +38,32 @@ class MainHandler(cqplus.CQPlusHandler):
             "Zen Star"
             ]
 
-##    def scan_files(self,directory,prefix=None,postfix=None):
-##        files_list=[]
-##        for root, sub_dirs, files in os.walk(directory):
-##            for special_file in files:
-##                if postfix:
-##                    if special_file.endswith(postfix):
-##                        files_list.append(os.path.join(root,special_file))
-##                elif prefix:
-##                    if special_file.startswith(prefix):
-##                        files_list.append(os.path.join(root,special_file))
-##                else:
-##                    files_list.append(os.path.join(root,special_file))        
-##        return files_list
+    def scan_files(self,directory,prefix=None,postfix=None):
+        files_list=[]
+        for root, sub_dirs, files in os.walk(directory):
+            for special_file in files:
+                if postfix:
+                    if special_file.endswith(postfix):
+                        files_list.append(os.path.join(root,special_file))
+                elif prefix:
+                    if special_file.startswith(prefix):
+                        files_list.append(os.path.join(root,special_file))
+                else:
+                    files_list.append(os.path.join(root,special_file))        
+        return files_list
 
     def handle_event(self, event, params):
         path = os.getcwd()
         if event=='on_group_msg':
-            self.api.send_group_msg(params['from_group'],"收到")
+##            self.api.send_group_msg(params['from_group'],"收到")
             if("[CQ:at,qq=2874404757]" in params['msg']):
                 self.auto_recorder(params['from_qq'],params['msg'])
             else:
                 msg_list = params['msg'].split('\r\n')
-                if msg_list[0] == '%自定配方':
+                if msg_list[0] == '&amp;自定配方':
                     cont_dict = self.dict_wrapper(msg_list)
                     self.dict_parser(cont_dict,params['from_group'])
-                elif msg_list[0] == '%在册配方':
+                elif msg_list[0] == '&amp;在册配方':
                     if(len(msg_list)==2):
                         self.reg_output(msg_list[1],params['from_group'])
                     elif(len(msg_list)==1):
@@ -72,12 +72,12 @@ class MainHandler(cqplus.CQPlusHandler):
                         self.api.send_group_msg(params['from_group'],"点单指令过长（超出2行），请客官检查指令，多谢！")
                     else:
                         self.api.send_group_msg(params['from_group'],"未知错误，请客官检查指令是否与模板格式一致，多谢！")
-##                elif msg_list[0] == '%全部定制':
-##                    path += '\\users_menu'
-##                    drink_list = self.scan_files(path,postfix='.pkl')
-##                    drink_list = [item.replace(path+"\\","").replace(".pkl","") for item in drink_list]
-##                    self.api.send_group_msg(params['from_group'],'\r\n'.join(drink_list))
-                elif msg_list[0] == '%点单记录':
+                elif msg_list[0] == '&amp;全部定制':
+                    path += '\\users_menu'
+                    drink_list = self.scan_files(path,postfix='.pkl')
+                    drink_list = [item.replace(path+"\\","").replace(".pkl","") for item in drink_list]
+                    self.api.send_group_msg(params['from_group'],'\r\n'.join(drink_list))
+                elif msg_list[0] == '&amp;点单记录':
                     path += '\\users_log'
                     if(os.path.exists(path+'\\' + str(params['from_qq']) + '.log')):
                         result = self.get_log(path,params['from_qq'])
@@ -90,7 +90,7 @@ class MainHandler(cqplus.CQPlusHandler):
                                                 text_res)
                     else:
                         self.api.send_group_msg(params['from_group'],"目前还没有您的点单记录，要点些什么吗？")
-                elif msg_list[0] == "%口味记录":
+                elif msg_list[0] == "&amp;口味记录":
                     path += '\\users_log'
                     if(os.path.exists(path+'\\' + str(params['from_qq']) + '.log')):
                         result = self.get_log(path,params['from_qq'])
@@ -104,12 +104,12 @@ class MainHandler(cqplus.CQPlusHandler):
                                                 text_res)
                     else:
                         self.api.send_group_msg(params['from_group'],"目前还没有您的点单记录，要点些什么吗？")
-                elif msg_list[0] == "%清空记录":
+                elif msg_list[0] == "&amp;清空记录":
                     self.purge_record(params['from_qq'],params['from_group'])
-                elif msg_list[0] == "%命题调制":
+                elif msg_list[0] == "&amp;命题调制":
                     self.logging.debug(msg_list[1])
                     self.mix_by_name(msg_list[1],params['from_group'])
-                elif msg_list[0] == "%删除配方":
+                elif msg_list[0] == "&amp;删除配方":
                     result = self.api.get_group_member_info(group_id=params['from_group'],user_id=params['from_qq'],no_cache=True)
                     if(result['role']>=2):
                         if(len(msg_list)!=2):
@@ -118,7 +118,7 @@ class MainHandler(cqplus.CQPlusHandler):
                             self.delete_recipe(msg_list[1],params['from_group'])
                     else:
                         self.api.send_group_msg(params['from_group'],"客人请不要往后厨跑哦~")
-                elif msg_list[0] == "%心动推荐":
+                elif msg_list[0] == "&amp;心动推荐":
                     
                     if(len(msg_list)!=2):
                         self.api.send_group_msg(params['from_group'],"不好意思，我没听清~")
@@ -141,7 +141,7 @@ class MainHandler(cqplus.CQPlusHandler):
                         self.api.send_group_msg(params['from_group'],
                                                 "给客官推荐"+
                                                 flavor+
-                                                "味的饮料，@酒保并输入 %"+
+                                                "味的饮料，@酒保并输入 &"+
                                                 flavor+
                                                 " 即可查看所有该类饮料~"
                                                 )
