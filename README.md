@@ -11,5 +11,7 @@ SnowNLP: for sentiments recognition of sentences
 ## DONE:
 Limit Msg frequency to avoid crash.
 
+Detect and reboot for post-crash situation.
+
 ## TODO:
-Need detection and reboot for post-crash situation.
+Develop NoneBot branch for more stable performance.
