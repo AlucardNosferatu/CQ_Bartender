@@ -1,7 +1,7 @@
 # CQ_Bartender
 For Tulpas and Hosts
 
-##DEPE
+## DEPE
 sklearn+pandas: for generation of recipes for names
 
 SnowNLP: for sentiments recognition of sentences
