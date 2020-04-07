@@ -56,7 +56,7 @@ class MainHandler(cqplus.CQPlusHandler):
         path = os.getcwd()
         if event=='on_group_msg':
 ##            self.api.send_group_msg(params['from_group'],"收到")
-            if("[CQ:at,qq=2874404757]" in params['msg']):
+            if("[CQ:at,qq=707438387]" in params['msg']):
                 self.auto_recorder(params['from_qq'],params['msg'])
             else:
                 msg_list = params['msg'].split('\r\n')
