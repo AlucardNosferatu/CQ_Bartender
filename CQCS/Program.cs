@@ -84,7 +84,7 @@ namespace CQCS
 
         public static void SearchAndClick() {
             IntPtr ParenthWnd = new IntPtr(0);
-            ParenthWnd = FindWindow(null, "酷Q Pro 5.15.9");
+            ParenthWnd = FindWindow(null, "酷Q Pro 5.15.10");
             if (ParenthWnd != IntPtr.Zero)
             {
                 Console.WriteLine("找到窗口");

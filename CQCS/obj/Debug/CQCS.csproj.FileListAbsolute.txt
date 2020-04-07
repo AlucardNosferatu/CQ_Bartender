@@ -14,3 +14,11 @@ C:\酷Q Pro\CQCS\obj\Debug\CQCS.csprojAssemblyReference.cache
 C:\酷Q Pro\CQCS\obj\Debug\CQCS.csproj.CopyComplete
 C:\酷Q Pro\CQCS\obj\Debug\CQCS.exe
 C:\酷Q Pro\CQCS\obj\Debug\CQCS.pdb
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\bin\Debug\CQCS.exe.config
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\bin\Debug\CQCS.exe
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\bin\Debug\CQCS.pdb
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\bin\Debug\EventHook.dll
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\obj\Debug\CQCS.csprojAssemblyReference.cache
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\obj\Debug\CQCS.csproj.CopyComplete
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\obj\Debug\CQCS.exe
+C:\Users\16413\Desktop\Tulpa\CQ_Bar\CQCS\obj\Debug\CQCS.pdb
