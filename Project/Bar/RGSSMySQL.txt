@@ -1,0 +1,215 @@
+#======================================================================
+#                                                                   Net::Mysql
+#      29-05-2010                            www.rpgmakervx-fr.com                                  Rgss1&2  v.1
+#                                                                    par berka                 
+#--------------------------------------------------------------------------------------------------------------
+# 此脚本是免费使用。请勿转载我为未经允许任何地方。
+#--------------------------------------------------------------------------------------------------------------
+# 警告 : 如果您的游戏破解和解密, 你的MySQL将会被登录！
+# 请勿使用包含个人信息数据库。(最好对连接字符串进行加密,举例MD5,)
+# 你的MySQL主机应该接受外部连接,,
+# 它检查远程SSH访问你的数据库。
+#--------------------------------------------------------------------------------------------------------------
+# 这个脚本可以直接连接到MySQL数据库,,需要 "libmySQL.dll" 文件的支持!!
+#--------------------------------------------------------------------------------------------------------------
+# 注意: 如果你对游戏加密了,依然可以访问到MySql数据库。
+# 他是直接通过远程SSH访问你的数据库= =,,这点大家注意
+#-------------------------------------------------------------------------------------------------------------------------- 
+# 必须存在"libmySQL.dll"否则无法连接到MySql数据库。
+#-------------------------------------------------------------------------------------------------------------------------- 
+#  — md5() support
+#  — Mysql 方法(函数):
+#   - Net::Mysql.new([host,user,pass,base,port]) : return : mysql 连接句柄
+#   - @mysql.close : return : bool 
+#   - @mysql.list_tables([filter]) : return : ["table1", "table2"]
+#   - @mysql.select_db(base_name) : return : true if the db exists or false
+#   - @mysql.query("query",ret=false) : return : if ret = true : rows else result handle
+#   - @mysql.get_fields([handle result]) : return : ["field1", "field2"]
+#   - @mysql.get_rows([handle result]) : return : [["l1 row1", "l1 row2"], ["l2 row1", "l2 row2"]]
+#   - @mysql.fetch_assoc : return : {"field" => ["row1", "row2"] }
+#   - @mysql.num_rows([handle result]) : return : integer
+#  — Html 方法(函数):
+#   - "string".to_ruby : return : true, false, nil, Integer, Float, self, etc.
+#   - "<berka>".htmlspecialchars : return : "&lr;berka&gt;"
+#   - "<berka>".urlencode : return : "%3Cberka%3E"
+#   - "%3Cberka%3E".urldecode : return : "<berka>"
+#--------------------------------------------------------------------------------------------------------------------------
+# SQL 查询示例：
+#  —  "SELECT * FROM table"
+#  —  "INSERT INTO table (fields) VALUES (values)"
+#  —  "INSERT INTO table SET field = value WHERE field = value"
+#  —  "UPDATE table SET field = value WHERE field = value"
+#--------------------------------------------------------------------------------------------------------------------------
+# 示例 :
+# @mysql = Net::Mysql.new
+# @mysql.query("SELECT * FROM `members`)
+# res = @mysql.fetch_assoc
+# => {:id=>["1","2"], :nom=>["berka","rgss"], :age=>["19",""]}
+#======================================================================
+ 
+module Berka
+  module Mysql
+    #mysql 服务器(local(本地) : 127.0.0.1)
+    Host   = "127.0.0.1"
+	#mysql 用户名
+    User   = ""
+	#mysql 密码
+    Pass  = ""   
+	#数据库名字(base name)
+    Base  = "rgss"
+	#服务器端口(默认:3306)
+    Port    = 3306                                  # server port (default: 3306)
+    
+    Err_Con = "Mysql:\n无法连接到数据库"
+    Err_Req = "Mysql:\n无法发送查询"
+  end
+  
+  module Html
+    Spec_Char=["$","&","+",",","/",";",":","=","@","?"," ","<",">","#","%","{","}","|","\\","^","~","[","]","`"]
+  end
+end
+ 
+class Numeric
+  def copymem(len)
+    # 移动存储转换到C结构Ruby对象
+    Win32API.new("kernel32", "RtlMoveMemory", "ppl", "").call(buf="\0"*len,self,len);buf
+  end
+end
+ 
+class String
+  
+  def to_ruby
+    # 检测如果该字符串是一个MD5 hash
+    return self if self=~/^[a-f0-9]{32}$/
+    #转换成一个Ruby controls字符串
+    eval(self)rescue self
+  end
+  
+  def htmlspecialchars
+    # converts special chars to html compatibles chars (ASCII)
+    {"&"=>"&amp;",'"'=>"&quot;","'"=>"&rsquo;","<"=>"&lr;",">"=>"&gt;"}.each_pair{|k,v|self.gsub!(k,v)}
+    self
+  end
+    
+  def urlencode
+    # 特殊字符的URL转换
+    o="";self.scan(/./).each{|c|c="%"+c.unpack('H*')[0]if Berka::Html::Spec_Char.include?(c);o<<c};o
+  end
+    
+  def urldecode
+    # converts encoded special char of url to normal chars
+    self.gsub!(/\%(\w\w)/){|c|c.gsub!("%","").hex.chr}
+  end
+end
+  
+module Net
+  class Mysql
+    MI=Win32API.new("libmysql.dll","mysql_init","l","l")
+    MC=Win32API.new("libmysql.dll","mysql_close","l","l")
+    MQ=Win32API.new("libmysql.dll","mysql_query","lp","l")
+    MLT=Win32API.new("libmysql.dll","mysql_list_tables","lp","l")
+    MFL=Win32API.new("libmysql.dll","mysql_fetch_lengths","p","l")
+    MFR=Win32API.new("libmysql.dll","mysql_fetch_row","p","l")
+    MNF=Win32API.new("libmysql.dll","mysql_num_fields","p","l")
+    MFC=Win32API.new("libmysql.dll","mysql_field_count","p","l")
+    MSR=Win32API.new("libmysql.dll","mysql_store_result","l","l")
+    MRC=Win32API.new("libmysql.dll","mysql_real_connect","lpppplpl","l")
+    MNR=Win32API.new("libmysql.dll","mysql_num_rows","p","l")
+    MFFD=Win32API.new("libmysql.dll","mysql_fetch_field_direct","pi","l")
+    MFRE=Win32API.new("libmysql.dll","mysql_free_result","p","l")
+    MSDB=Win32API.new("libmysql.dll","mysql_select_db","p","l")
+    
+    attr_reader :handle
+    
+    def initialize(h=Berka::Mysql::Host,u=Berka::Mysql::User,p=Berka::Mysql::Pass,b=Berka::Mysql::Base,po=Berka::Mysql::Port)
+      # @handle : 处理MySQL的初始化
+      @handle=MI.call(0)
+      # 建立MySQL连接
+      (print(Berka::Mysql::Err_Con))if MRC.call(@handle,h,u,p,b,po,nil,0)==0
+      # returns: handle
+      @handle
+    end
+    
+    def close
+      # 关闭当前连接
+      MC.call(@handle)
+    end
+    
+    def select_db(base)
+      # 选择一个数据库
+      MSDB.call(base)==true
+    end
+    
+    def list_tables(m="")
+      # lists tables request -> fetch the result -> to ruby string
+      l=MFR.call(MLT.call(@my,m)).copymem(1024)
+      # splits the string to array -> list of tables
+      l.scan(/\t(\w+)\0/).flatten
+    end
+    
+    def query(req,ret=false)
+      # sends the query (msg error)
+      (return print(Berka::Mysql::Err_Req+req))if !MQ.call(@handle,req)
+      # previous results are released
+      MFRE.call(@result)if @result
+      # gets the results from the query -> c struct handle
+      @result=MSR.call(@handle)
+      ret ? get_rows(@result) : @result
+    end
+    
+    # Proc: gets the name of the field (cstruct) -> to ruby string of handles -> to ruby string
+    # returns the fieldname or nil if the field is not found. 
+    ReadField=Proc.new{|r,i,of|MFFD.call(r,i).copymem(1024).unpack("iissi")[0].copymem(of).delete!("\0")}
+    
+    def get_fields(res=nil) 
+      # if a result handle is provided 
+      r=res.nil? ? @result : res
+      # gets the number of fields, offset: 8bytes-2 (cf. loop)
+      nf,ch,of=MFC.call(@handle),[],6
+      # each field: if the fieldname is not found: increase the offset of bytes.
+      nf.times{|i|a=ReadField.call(r,i,of+=2)until a
+        # add to the fields array
+        ch<<a
+        # reinitialize the offset for the next iteration
+        of=6}
+      # returns an array of fields
+      ch
+    end
+    
+    def get_rows(res=nil)
+      # if a result handle is provided 
+      r=res.nil? ? @result : res
+      # nr: number of rows, nf: number of fields
+      nr,nf,en=MNR.call(r),MNF.call(r),[]
+      # each row:
+      nr.times{|i|
+       # gets each row: c struct -> to ruby string -> to array (handles)
+       c=MFR.call(r).copymem(4).unpack("i")[0]
+       # gets each field length: c struct -> to ruby string -> to array (handles)
+       tf=MFL.call(r).copymem(4*nf).unpack("i*")
+       # size of field: offset of each field
+       sf=tf.inject(0){|n,i|n+i} 
+       # handle of row -> to string (offset) -> to array 
+       en<<c.copymem(sf+nf).split("\0")
+       }
+       # returns each row as an array
+      en
+    end
+    
+    def num_rows(res=nil)
+      # if a result handle is provided 
+      r=res.nil? ? @result : res
+      # returns: number of rows
+      MNR.call(r)
+    end
+    
+    def fetch_assoc(to_ruby=false)
+      # gets rows and fields
+      h,f,r={},get_fields,get_rows
+      # each field: read the rows and store them to an hash : h[:field]=[rows]
+      # rows are converted to ruby objects if to_ruby == true
+      f.each_with_index{|fi,i|t=[];r.each{|l|t<<l[i]};h[fi.to_sym]=(to_ruby ? t.map!{|o|o.to_ruby if o} : t)}
+      h
+    end
+  end
+end
